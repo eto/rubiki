@@ -1,6 +1,6 @@
 = Rubiki 0.1
 
-by あさひみちはる <fusuian@gmail.com>
+by あさひみちはる <fusuian[at]gmail.com>
 2010/11/1
 
 == これは何？
