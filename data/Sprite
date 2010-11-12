@@ -26,7 +26,7 @@ def fall
  end
 
 int = Interval.new(50) {
-   ctx.fillStyle = 'rgb(0, 0, 0)'
+   ctx.fillStyle = 'rgb(255, 255, 255)'
    ctx.fillRect(0, 0, 480, 320)
    ctx.drawImage(image, x, y)
    x += step
