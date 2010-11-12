@@ -1,0 +1,69 @@
+$win = $native.window
+$doc = $win.document
+
+$debug = $doc.getElementById('debug')
+
+class Canvas
+  def canvas; @canvas; end
+  def context; @context; end
+  def background=(bg); @background = bg; end
+
+  def initialize(width = nil, height = nil)
+    @canvas = $doc.getElementById('canvas')
+    unless @canvas
+       puts "create canvas"
+       @canvas = $doc.createElement('canvas')
+       $debug.appendChild(@canvas)
+    end
+    @canvas.width = width if width
+    @canvas.height = height if height
+    @width = @canvas.width
+    @height = @canvas.height
+    @context = @canvas.getContext('2d')
+    @background = 'rgb(0, 0, 0)'
+
+    clear
+  end
+
+  def clear
+    @context.fillStyle = @background
+    @context.fillRect(0, 0, @width, @height)
+  end
+end
+
+
+canvas = Canvas.new(300, 300)
+canvas.background = 'rgb(255,255,255)'
+canvas.clear
+
+Colors = %w(red blue green magenta cyan yellow)
+
+num = 0
+ctx = canvas.context
+ctx.strokeStyle = Colors[0]
+ctx.fillStyle = 'rgb(0,0,0)'
+ctx.lineWidth = 4
+
+num = 0
+col = 0
+add = 1
+int = Interval.new(100) {
+      x = 150 - num*10
+      ctx.beginPath
+      ctx.strokeStyle = Colors[col]
+      ctx.rect 0,0,x,x
+      ctx.stroke
+      ctx.fill
+      ctx.closePath
+      num += add
+      if (num < 0)
+         num = 0
+         add = 1
+         col += 1
+         col = 0 if col >= Colors.size
+      elsif (num > 14)
+         num = 14
+         add = -1
+      end
+}
+int.start

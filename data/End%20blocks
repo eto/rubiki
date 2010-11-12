@@ -1,0 +1,5 @@
+puts "Let's start !"
+END { puts 'Bung !!!!' }
+END { puts 1 }
+END { puts 2 }
+END { puts 3 }

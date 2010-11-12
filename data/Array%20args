@@ -1,0 +1,6 @@
+def addPrint a, b, c
+  puts a + b + c
+end
+  
+ary = [' World ', '!']
+addPrint 'Hello', *ary

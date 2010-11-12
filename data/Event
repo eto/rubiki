@@ -1,0 +1,16 @@
+add_event_listener("keydown") { |event|
+   puts "click! <#{event.which}>"
+}
+
+add_event_listener("touchstart") { |event|
+   puts "start! "
+   puts event.targetTouches[0].pageX
+}
+
+add_event_listener("touchmove") { |event|
+
+}
+
+add_event_listener("touchend") { |event|
+   puts "end!"
+}

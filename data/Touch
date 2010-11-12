@@ -1,0 +1,93 @@
+$win = $native.window
+$doc = $win.document
+
+$debug = $doc.getElementById('debug')
+
+class Canvas
+  def canvas; @canvas; end
+  def context; @context; end
+
+  def initialize(width = nil, height = nil)
+    @canvas = $doc.getElementById('canvas')
+    unless @canvas
+       puts "create canvas"
+       @canvas = $doc.createElement('canvas')
+       $debug.appendChild(@canvas)
+    end
+    @canvas.width = width if width
+    @canvas.height = height if height
+    @width = @canvas.width
+    @height = @canvas.height
+    @context = @canvas.getContext('2d')
+    @background = 'rgb(0, 0, 0)'
+
+    clear
+  end
+
+  def clear
+    @context.fillStyle = @background
+    @context.fillRect(0, 0, @width, @height)
+  end
+end
+
+class Sprite
+  def image; @image; end
+
+  def initialize(id)
+    @image = $doc.getElementById(id)
+    move 0, 0
+  end
+
+  def move(x, y)
+     @x = x
+     @y = y
+  end
+    
+  def draw(context)
+    context.drawImage(@image, @x, @y)
+  end
+end
+
+class Invader < Sprite
+  def initialize
+    super 'invader'
+    @stepx = 6
+    @stepy = 16
+  end
+
+  def act
+    @x += @stepx
+    if (@x > 284)
+      @x = 284
+      @stepx = -6
+      fall
+    elsif (@x < 0)
+      @x = 0
+      @stepx = 6
+      fall
+    end
+  end
+
+  def fall
+    @y += @stepy
+    if (@y < 0)
+      @y = 0
+      @stepy = 16
+    elsif (@y > 120) 
+      @y = 120
+      @stepy = -16       
+    end
+  end
+end
+
+canvas = Canvas.new(320, 240)
+invader = Invader.new
+invader.move 0, 30
+
+$int = Interval.new(50) {
+   canvas.clear
+   invader.act
+   invader.draw canvas.context
+}
+
+$int.start

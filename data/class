@@ -1,0 +1,15 @@
+class Pi
+	def initialize
+		@a = 355.0
+	end
+	
+	def calc
+		b = 113.0
+		return @a / b
+	end
+	
+	PI = 'PI is about'
+end
+	
+puts Pi::PI
+puts Pi.new.calc

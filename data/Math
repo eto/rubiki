@@ -1,0 +1,6 @@
+def rad(a)
+  a * 2 * 3.14159265358979 / 360.0
+end
+puts Math.sin(rad(90))
+puts Math.sin(rad(30))
+puts Math.sin(rad(45))

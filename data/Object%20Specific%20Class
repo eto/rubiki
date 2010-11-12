@@ -1,0 +1,12 @@
+obj = Object.new
+class << obj
+  def say
+    puts "To err is human,"
+  end
+end
+obj.say
+  
+def obj.say
+  puts "to forgive divine."
+end
+obj.say

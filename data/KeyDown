@@ -1,0 +1,3 @@
+add_event_listener("keydown") { |event|
+   puts event.which
+}

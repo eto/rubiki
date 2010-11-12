@@ -1,0 +1,7 @@
+ON = ' on '
+$lang = 'Ruby'
+def msg
+	verb = 'running'
+	return $lang + ' is ' + verb + ON + ' JavaScript'
+end
+puts msg

@@ -1,0 +1,19 @@
+class Hoge
+	def add_msg &block
+		block.yield "is"
+	end
+end
+	
+class Foo
+	NAME = ' - William Shakespeare'
+	def main
+		pre = "Action"
+		@space = " "
+		Hoge.new.add_msg do |msg|
+			fuga = "eloquence"
+			puts pre + @space + msg + @space + fuga + NAME
+		end
+	end
+end
+	
+Foo.new.main

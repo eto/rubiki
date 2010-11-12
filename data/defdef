@@ -1,0 +1,12 @@
+$a = 'Make everything '
+def init
+	def msg
+		c = ', but not simpler.'
+		return $a + very_important + c
+	end
+	def very_important
+		'as simple as possible'
+	end
+end
+init
+puts msg + ' - Albert Einstein'
