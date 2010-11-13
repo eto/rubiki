@@ -30,7 +30,7 @@
 	<% if wiki.editable?(@page) -%>
     <%= flashbox %>
 
-	<div id="edit"><%= a("編集", :edit, @page) %></div> 
+	<div id="edit"><%= a("edit", :edit, @page) %></div> 
 	<% end -%>
 
 	<button onclick="javascript:run()" value="Run">Run</button>
