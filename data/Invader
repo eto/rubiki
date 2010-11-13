@@ -13,31 +13,29 @@ ctx = canvas.getContext('2d')
 
 image = $doc.getElementById('invader')
 x = 0
-y = 50
-step = 10
+y = 0
+step = 4
 
-def fall
-      x -= step
-      y += 16
-      if (y > 200) 
-           int.stop
-           puts "Complete."
-      end
- end
-
-int = Interval.new(50) {
-   ctx.fillStyle = 'rgb(100, 255, 100)'
+int = Interval.new(10) {
+   ctx.fillStyle = 'rgb(255, 192, 192)'
    ctx.fillRect(0, 0, 480, 320)
    ctx.drawImage(image, x, y)
    x += step
-   if (x > 200)
+   if 200 < x
       step = -4
-      fall
-   elsif (x < 0)
+      y += 16
+      if 120 < y 
+        int.stop
+        puts "Complete."
+      end
+   elsif x < 0
       step = 4
-      fall
+      y += 16
+      if 120 < y 
+        int.stop
+        puts "Complete."
+      end
    end
-
 }
 
 int.start
