@@ -1035,10 +1035,12 @@ HotRuby.prototype = {
 				success: function(response) {
 					if(response.responseText.length == 0) {
 						alert("Compile failed");
+					} else if (response.responseText == "[\"compile error\"]") {
+						alert(response.responseText);
 					} else {
-//				　 		var opcode = document.getElementById('opcode');
-//		　 				var textNode = document.createTextNode(response.responseText);
-//　 						opcode.appendChild(textNode);
+						var opcode = document.getElementById('opcode');
+						var textNode = document.createTextNode(response.responseText);
+						opcode.appendChild(textNode);
 						this.run(eval("(" + response.responseText + ")"));
 					}
 				},

@@ -98,11 +98,15 @@ class RamazikiController < Ramaze::Controller
   def compile_ruby
     src ||= request['src']
     src = html_unescape src
-    if RUBY_VERSION == "1.9.0"
-      VM::InstructionSequence.compile(src, "src", 1, OutputCompileOption).to_a.to_json
-    else
-      #RubyVM::InstructionSequence.compile(src, "src", 1, OutputCompileOption).to_a.to_json
-      RubyVM::InstructionSequence.compile(src, "src", nil, 1, OutputCompileOption).to_a.to_json
+    begin
+      if RUBY_VERSION == "1.9.0"
+        VM::InstructionSequence.compile(src, "src", 1, OutputCompileOption).to_a.to_json
+      else
+        RubyVM::InstructionSequence.compile(src, "src", nil, 1, OutputCompileOption).to_a.to_json
+      end
+    rescue SyntaxError
+      [$!.to_s].to_json
+      #$!.backtrace.to_json
     end
   end
   
