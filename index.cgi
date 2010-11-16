@@ -31,20 +31,15 @@ class RamazikiController < Ramaze::Controller
   def home
   end
 
+  def news
+    @pages = wiki.list(:sort_by => :modify_time).reverse! 
+    @pager = paginate(@pages)
+  end
+
   def index(mode = "")
     @pages = wiki.list
     #Ramaze::Log.debug pages.join(', ') 
     @pager = paginate(@pages)
-  end
-
-  def show(page = nil)
-    @title = url_decode page
-    @page ||= page
-    text = wiki[@page]
-    unless text
-       redirect r(:edit, @page)
-    end
-    @content = parser.parse text
   end
 
   def create(page)
@@ -74,11 +69,11 @@ class RamazikiController < Ramaze::Controller
         redirect r(:home)
       elsif wiki[page] == text
         flash[:notice] = "内容が変更されていません。"
-        redirect r(:show, page_uri)
+        redirect r(:edit, page_uri)
       else
         wiki[page] = text
         flash[:notice] = "更新しました。"
-        redirect r(:show, page_uri)
+        redirect r(:edit, page_uri)
       end
     else
         flash[:notice] = "テキストがありません。"

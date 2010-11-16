@@ -14,7 +14,7 @@
     <div class="content">
     <ul>
 		<% @pager.each do |page| %>
-		<li><%= a page, "show/#{u(page)}" %></li>
+		<li><%= a page, "edit/#{u(page)}" %></li>
 		<% end %>
     </ul>
     </div>

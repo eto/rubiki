@@ -6,7 +6,7 @@ module Ramaze
     module RamazikiHelper
       def header
         title = %Q(<div id="title_small">Rubuki</div>)
-        menus = [a("Home", :home), a("ページ一覧", :index), a("新規ページ作成", :create)]
+        menus = [a("Home", :home), a("ページ（新着順）", :news), a("ページ（ABC順）", :index), a("新規ページ作成", :create)]
         %Q(<div id="header">\n#{title + menus*" | "}\n</div>)
       end
       
