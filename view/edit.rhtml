@@ -19,7 +19,7 @@
 		function compileAndRun() {
 			var e = document.getElementById("ruby_src");
 			var src = e.innerHTML;
-			var hotruby = new HotRuby();
+			hotruby = new HotRuby();
 			hotruby.compileAndRun("/compile_ruby", src);
 		}
 
