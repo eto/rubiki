@@ -38,23 +38,19 @@
     <h1><%= @title %></h1>
     <%= flashbox %>
 	
-<button onclick="javascript:compileAndRun()" value="Run">Run</button>
 <form name="edit" method="POST" action="/modify/<%= u @page %>">
 
-<input type="submit" value="Save">
 
 <div>Result:</div>
 <div id="debug" class="result"></div>
+<textarea name="text" id="ruby_src" cols="50" rows="20" style="font-size: 12pt;"><%= @text %></textarea>
 <br />
-
+<input type="submit" value="Save">
+<button type="button" onclick="javascript:compileAndRun()" value="Run">Run</button>
+</form>
 <canvas id="canvas" width="320" height="240"></canvas>
 
-<textarea name="text" id="ruby_src" cols="60" rows="20" style="font-size: 12pt;"><%= @text %></textarea>
-<br/>
-</form>
-
 <pre id="opcode"></pre>
-<img id="invader" src = "/image/invader.png">
 <%= footer %>
  </body>
 </html>
