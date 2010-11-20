@@ -1299,6 +1299,14 @@ HotRuby.prototype.classes = {
 			}
 		},
 		
+		"<<": function(recver, args){
+			return recver << args[0];
+		},
+		
+		">>": function(recver, args){
+			return recver >> args[0];
+		},
+		
 		"-@" : function(recver, args) {
 			return -recver;	
 		},
