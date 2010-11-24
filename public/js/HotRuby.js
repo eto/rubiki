@@ -1181,7 +1181,11 @@ HotRuby.prototype.classes = {
 					sf.sp--;
 				},
 		 		false);
-		}
+		},
+		
+		"class": function(recver){
+			return this.createRubyString(recver.__className);
+		} 
 
 	},
 
