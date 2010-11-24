@@ -93,6 +93,7 @@ class RamazikiController < Ramaze::Controller
   def compile_ruby
     src ||= request['src']
     src = html_unescape src
+    parse src
     begin
       if RUBY_VERSION == "1.9.0"
         VM::InstructionSequence.compile(src, "src", 1, OutputCompileOption).to_a.to_json
@@ -103,6 +104,35 @@ class RamazikiController < Ramaze::Controller
       [$!.to_s].to_json
       #$!.backtrace.to_json
     end
+  end
+  
+  def parse(src)
+    src.gsub!(/require (["'])(.*)\1/) {
+      lib = $2
+      @loaded_features ||= {}
+      unless @loaded_features.include? lib
+        wiki[lib]
+        @loaded_features[lib] = true
+      end
+    }
+    src.gsub!(/attr_reader (:(\w+),*\s*)*/) {
+      getter $2
+    }
+    src.gsub!(/attr_writer (:(\w+),*\s*)*/) { 
+      setter $2
+    }
+    src.gsub!(/attr_accessor (:(\w+),*\s*)*/) { 
+      getter($2) + setter($2)
+    }
+    src
+  end
+
+  def getter(s)
+      %Q(  def #{s}; @#{s}; end\n) 
+  end
+  
+  def setter(s)
+      %Q(  def #{s}=(v); @#{s} = v; end\n) 
   end
   
 end
