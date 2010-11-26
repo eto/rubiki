@@ -44,8 +44,12 @@
 <div id="debug" class="result"></div>
 
 <form name="edit" method="POST" action="/modify/<%= u @page %>">
+<input type="submit" value="Save">
+<button type="button" onclick="javascript:compileAndRun()" value="Run">Run</button>
+<br />
 <textarea name="text" id="ruby_src" cols="50" rows="20" style="font-size: 12pt;"><%= @text %></textarea>
 <br />
+
 <input type="submit" value="Save">
 <button type="button" onclick="javascript:compileAndRun()" value="Run">Run</button>
 </form>
