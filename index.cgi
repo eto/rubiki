@@ -89,32 +89,42 @@ class RamazikiController < Ramaze::Controller
   :instructions_unification =>false,
   :stack_caching            =>false,
   }
-  
-  def compile_ruby
-    src ||= request['src']
-    src = html_unescape src
-    parse src
+
+  def compile(src, page = "src")
+    myerr = StringIO.open
+    $stderr = myerr
     begin
       if RUBY_VERSION == "1.9.0"
-        VM::InstructionSequence.compile(src, "src", 1, OutputCompileOption).to_a.to_json
+        VM::InstructionSequence.compile(src, page, 1, OutputCompileOption).to_a.to_json
       else
-        RubyVM::InstructionSequence.compile(src, "src", nil, 1, OutputCompileOption).to_a.to_json
+        RubyVM::InstructionSequence.compile(src, page, nil, 1, OutputCompileOption).to_a.to_json
       end
     rescue SyntaxError
-      [$!.to_s].to_json
+      myerr.rewind
+      err = myerr.read
+      #STDERR.puts "<#{err.class} #{err.inspect}> <#{err.to_s}>"
+      #STDERR.puts [err.inspect].to_json
+      [err].to_json
       #$!.backtrace.to_json
+    ensure
+      $stderr = STDERR
+      myerr.close
     end
   end
   
+  def compile_ruby
+    src = html_unescape request['src']
+    parse src
+    compile src
+  end
+  
+  def require
+    lib = html_unescape request['lib']
+    compile parse(wiki[lib])
+  end
+  
+  private
   def parse(src)
-    src.gsub!(/require (["'])(.*)\1/) {
-      lib = $2
-      @loaded_features ||= {}
-      unless @loaded_features.include? lib
-        wiki[lib]
-        @loaded_features[lib] = true
-      end
-    }
     src.gsub!(/attr_reader (:(\w+),*\s*)*/) {
       getter $2
     }

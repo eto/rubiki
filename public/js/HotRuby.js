@@ -45,6 +45,8 @@ var HotRuby = function() {
 		__native : {}
 	};
 	this.topSF = null;
+
+	this.loaded_feature = {};
 	
 	this.checkEnv();
 };
@@ -1054,6 +1056,36 @@ HotRuby.prototype = {
 	},
 	
 	/**
+	 * Get the library from server.
+	 * @param {lib} A library page
+	 */
+	require : function(lib) {
+		if (hotruby.loaded_feature.lib == undefined) {
+			hotruby.loaded_feature.lib = lib;
+			var html = $.ajax({
+			    url : "/require",
+				data : { lib : encodeURIComponent(lib) },
+    			async : false, // ←デフォルトはtrue（非同期）
+				success : function(response){
+					if (response.length == 0) {
+						alert("Compile failed");
+					}
+					else 
+						if (response == "[\"compile error\"]") {
+							alert(response);
+						}
+						else {
+							hotruby.run(eval("(" + response + ")"));
+						}
+				},
+				failure: function(response){
+					alert("Compile failed");
+				}
+			});
+		}
+	},
+	
+	/**
 	 * Check whether the environment is Flash, Browser or Rhino.
 	 */
 	checkEnv : function() {
@@ -1183,9 +1215,14 @@ HotRuby.prototype.classes = {
 		 		false);
 		},
 		
-		"class": function(recver){
+		"class": function(recver) {
 			return this.createRubyString(recver.__className);
-		} 
+		},
+		
+		"require": function(recver, args) {
+			var lib = args[0];
+			this.require(lib.__native);	
+		}
 
 	},
 

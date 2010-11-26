@@ -1,25 +1,18 @@
-$win = $native.window
-$doc = $win.document
-
-$debug = $doc.getElementById('debug')
-
 class Canvas
-  def canvas; @canvas; end
-  def context; @context; end
+  attr_reader :canvas
+  attr_reader :context
+  attr_reader :width, :height
+  attr_accessor :background
 
-  def initialize(width = nil, height = nil)
-    @canvas = $doc.getElementById('canvas')
-    unless @canvas
-       puts "create canvas"
-       @canvas = $doc.createElement('canvas')
-       $debug.appendChild(@canvas)
-    end
-    @canvas.width = width if width
-    @canvas.height = height if height
+  def initialize
+	doc = $native.window.document
+    @canvas = doc.getElementById('canvas')
+    #@canvas.width = width if width
+    #@canvas.height = height if height
     @width = @canvas.width
     @height = @canvas.height
     @context = @canvas.getContext('2d')
-    @background = 'rgb(0, 0, 0)'
+    @background = 'white'
 
     clear
   end
@@ -33,8 +26,9 @@ end
 class Sprite
   def image; @image; end
 
-  def initialize(id)
-    @image = $doc.getElementById(id)
+  def initialize(path)
+    @image = $doc.createElement('img')
+    @image.src = path
     move 0, 0
   end
 
@@ -48,43 +42,3 @@ class Sprite
   end
 end
 
-class Invader < Sprite
-  def initialize
-    super 'invader'
-    @step = 8
-  end
-
-  def act
-    @x += @step
-    if (@x > 200)
-      @x = 200
-      @step = -8
-      fall
-    elsif (@x < 0)
-      @x = 0
-      @step = 8
-      fall
-    end
-  end
-
-  def fall
-    @x -= @step
-    @y += 16
-    if (@y > 120) 
-       $int.stop
-       puts "Complete."
-    end
-  end
-end
-
-canvas = Canvas.new(320, 240)
-invader = Invader.new
-invader.move 0, 30
-
-$int = Interval.new(50) {
-   canvas.clear
-   invader.act
-   invader.draw canvas.context
-}
-
-$int.start

@@ -1,0 +1,55 @@
+$win = $native.window
+$doc = $win.document
+
+$debug = $doc.getElementById('debug')
+
+require 'Canvas'
+
+class Invader < Sprite
+  def stepx=(pixel); @stepx=pixel; end
+  def stepy=(pixel); @stepy=pixel; end
+
+  def initialize
+    super '/image/invader.png'
+    @stepx = 0
+    @stepy = 0
+  end
+
+  def act
+    @x += @stepx
+    @y += @stepy
+  end
+end
+
+$canvas = Canvas.new
+$canvas.background = 'rgb(128, 0, 0)'
+$canvas.clear
+$invader = Invader.new
+$invader.move 0, 30
+
+def draw_all
+   $invader.act
+   $canvas.clear
+   $invader.draw($canvas.context)
+end
+
+add_event_listener("keydown") { |event|
+   case event.which
+   when 83 # s
+     $invader.stepx = -12
+     $invader.stepy = 0
+     draw_all
+   when 68 # d
+     $invader.stepx = 12
+     $invader.stepy = 0
+     draw_all
+   when 69 # e
+     $invader.stepx = 0
+     $invader.stepy = -12
+     draw_all
+   when 88 # x
+     $invader.stepx = 0
+     $invader.stepy = 12
+     draw_all
+   end
+}

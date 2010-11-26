@@ -1,16 +1,21 @@
-- -a の値がとれないバグ（地味にいや）
-- HTML5 の Image オブジェクトが取れない問題
-- Save時にサーバでコンパイルを済ませ、show した時点でバイトコードを埋め込みたい。
-- ↑ができればshowで highlight.js 効く（現状highlight.jsと共存できない）
-- サーバのコンパイルエラーを表示
+- リテラルの1がFloatになってしまう
+- Integer が使い物にならない
+- 埋め込み文字列のためのバイトコード tostring を実装する
+- iPad のタッチイベントの座標がとれない
+- (done)-a の値がとれないバグ（地味にいや）
+- (done)HTML5 の Image オブジェクトが取れない問題
+- (failure)Save時にサーバでコンパイルを済ませ、show した時点でバイトコードを埋め込みたい。
+- ↑ができれば showで highlight.js 効く（現状highlight.jsと共存できない）
+- (half)サーバのコンパイルエラーを表示
 - デバッガ導入できない？
 - HotRuby のデバッグもけっこうたいへん。
+- inspect, p の導入
 
 * 未実装の機能
-- require
-- attr_* 
-- sleep
+- (done)require
+- (done)attr_* 
+- (Interval で代用)sleep
 
 * 画面構成
-- show / edit を一本化してIDE風にできないか？
+- (done)show / edit を一本化してIDE風にできないか？
 - highlight.js とは相容れないかも
