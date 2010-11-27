@@ -81,6 +81,18 @@ class RamazikiController < Ramaze::Controller
     end
   end
   
+  def compile_ruby(page)
+    src = html_unescape request['src']
+    parse src
+    compile page, src
+  end
+  
+  def require
+    lib = html_unescape request['lib']
+    compile lib, parse(wiki[lib])
+  end
+  
+  private
   OutputCompileOption = {
   :peephole_optimization    =>true,
   :inline_const_cache       =>false,
@@ -90,10 +102,10 @@ class RamazikiController < Ramaze::Controller
   :stack_caching            =>false,
   }
 
-  def compile(src, page = "src")
-    myerr = StringIO.open
-    $stderr = myerr
+  def compile(page, src)
     begin
+      myerr = StringIO.open
+      $stderr = myerr
       if RUBY_VERSION == "1.9.0"
         VM::InstructionSequence.compile(src, page, 1, OutputCompileOption).to_a.to_json
       else
@@ -101,29 +113,15 @@ class RamazikiController < Ramaze::Controller
       end
     rescue SyntaxError
       myerr.rewind
-      err = myerr.read
-      #STDERR.puts "<#{err.class} #{err.inspect}> <#{err.to_s}>"
-      #STDERR.puts [err.inspect].to_json
-      [err].to_json
-      #$!.backtrace.to_json
+      myerr.readlines.to_json
     ensure
-      $stderr = STDERR
       myerr.close
+      $stderr = STDERR
     end
   end
-  
-  def compile_ruby
-    src = html_unescape request['src']
-    parse src
-    compile src
-  end
-  
-  def require
-    lib = html_unescape request['lib']
-    compile parse(wiki[lib])
-  end
-  
-  private
+
+  # コンパイルの前にソースを解析する。
+  # 1.attr_* を setter/getter に書き換える。
   def parse(src)
     src.gsub!(/attr_reader (:(\w+),*\s*)*/) {
       getter $2

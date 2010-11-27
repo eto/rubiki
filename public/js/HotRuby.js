@@ -1037,13 +1037,17 @@ HotRuby.prototype = {
 				success: function(response) {
 					if(response.responseText.length == 0) {
 						alert("Compile failed");
-					} else if (response.responseText == "[\"compile error\"]") {
-						alert(response.responseText);
 					} else {
-						var opcode = document.getElementById('opcode');
-						var textNode = document.createTextNode(response.responseText);
-						opcode.appendChild(textNode);
-						this.run(eval("(" + response.responseText + ")"));
+						var opcode_el = document.getElementById('opcode');
+						var opcode = eval("(" + response.responseText + ")");
+						opcode_el.innerText = opcode;
+						if (opcode.length > 1) {
+							opcode_el.style.visibility = "hidden";
+							this.run(opcode);
+						} else {
+							opcode_el.style.visibility = "visible";
+							alert(opcode[0]);
+						}
 					}
 				},
 				failure: function(response) {
