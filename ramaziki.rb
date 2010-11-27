@@ -18,7 +18,7 @@ class Ramaziki
       pages.map { |filename| to_pagename(filename) }
     else # 名前順
       pages.map! { |filename| to_pagename(filename)}
-      pages.sort
+      pages.sort_by {|filename| filename.downcase}
     end
   end
 

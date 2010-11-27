@@ -40,22 +40,19 @@
 	
 
 
+<canvas id="canvas" width="432" height="240" style="border: 3px double black;"></canvas>
 <div>Result:</div>
 <div id="debug" class="result"></div>
-
+<pre id="opcode" style="visibility:hidden">
+	
+</pre>
 <form name="edit" method="POST" action="/modify/<%= u @page %>">
 <input type="submit" value="Save">
 <button type="button" onclick="javascript:compileAndRun()" value="Run">Run</button>
 <br />
 <textarea name="text" id="ruby_src" cols="50" rows="20" style="font-size: 12pt;"><%= @text %></textarea>
-<br />
-
-<input type="submit" value="Save">
-<button type="button" onclick="javascript:compileAndRun()" value="Run">Run</button>
 </form>
-<canvas id="canvas" width="320" height="240"></canvas>
 
-<pre id="opcode"></pre>
 <%= footer %>
  </body>
 </html>
