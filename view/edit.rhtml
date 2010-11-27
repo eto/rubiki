@@ -20,7 +20,7 @@
 			var e = document.getElementById("ruby_src");
 			var src = e.innerHTML;
 			hotruby = new HotRuby();
-			hotruby.compileAndRun("/compile_ruby", src);
+			hotruby.compileAndRun("/compile_ruby/" + escape("<%= @page %>"), src);
 		}
 
 		function run() {
