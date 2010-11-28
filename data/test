@@ -1,3 +1,0 @@
-a=1
-aa=a<<1
-puts aa
