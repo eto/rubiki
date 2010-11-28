@@ -1,58 +1,27 @@
-$win = $native.window
-$doc = $win.document
+require 'Canvas'
 
-$debug = $doc.getElementById('debug')
-
-class Canvas
-  def canvas; @canvas; end
-  def context; @context; end
-  def background=(bg); @background = bg; end
-
-  def initialize(width = nil, height = nil)
-    @canvas = $doc.getElementById('canvas')
-    unless @canvas
-       puts "create canvas"
-       @canvas = $doc.createElement('canvas')
-       $debug.appendChild(@canvas)
-    end
-    @canvas.width = width if width
-    @canvas.height = height if height
-    @width = @canvas.width
-    @height = @canvas.height
-    @context = @canvas.getContext('2d')
-    @background = 'rgb(0, 0, 0)'
-
-    clear
-  end
-
-  def clear
-    @context.fillStyle = @background
-    @context.fillRect(0, 0, @width, @height)
-  end
-end
-
-
-canvas = Canvas.new(300, 300)
-canvas.background = 'rgb(255,255,255)'
+canvas = Canvas.new
+canvas.background = 'white'
 canvas.clear
 
-num = 0
+num = 25 # 線の数
+limitx = canvas.width
+limity = canvas.height
+
 ctx = canvas.context
-ctx.strokeStyle = 'rgb(255, 0, 0)'
+ctx.strokeStyle = 'red'
 ctx.lineWidth = 1
 
-   num = 11
-   
-   num.times {|x|
+num.times {|x|
       x1 = x*10
-      x2 = 100-x1
+      x2 = limitx-x1
       num.times {|y|  
           y1 = y*10
-          y2 = 100-y1
+          y2 = limity-y1
           ctx.beginPath
           ctx.moveTo x1, y1
           ctx.lineTo x2, y2
           ctx.stroke
       }
-   }
+}
 

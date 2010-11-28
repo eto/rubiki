@@ -1,7 +1,8 @@
 class Canvas
   attr_reader :canvas
   attr_reader :context
-  attr_reader :width, :height
+  attr_reader :width
+  attr_reader :height
   attr_accessor :background
 
   def initialize
@@ -24,7 +25,9 @@ class Canvas
 end
 
 class Sprite
-  def image; @image; end
+  attr_reader :image
+  attr_reader :x
+  attr_reader :y
 
   def initialize(path)
     @image = $doc.createElement('img')
@@ -39,6 +42,14 @@ class Sprite
     
   def draw(context)
     context.drawImage(@image, @x, @y)
+  end
+
+  def width
+    @image.style.width
+  end
+
+  def height
+    @image.style.height
   end
 end
 

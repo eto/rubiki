@@ -1,0 +1,125 @@
+$doc = $native.window.document
+$debug = $doc.getElementById('debug')
+
+require 'Canvas'
+
+class Invader < Sprite
+  def initialize
+    @sprites = []
+    @sprites << Sprite.new('/image/invader10-1.png')
+    @sprites << Sprite.new('/image/invader10-2.png')
+    @step = 12
+    @limitx = $canvas.width - 64
+    #puts @image.style.width
+  end
+
+  def act
+    @x += @step
+    if @x > @limitx
+      @x = @limitx
+      fall
+    elsif @x < 0
+      @x = 0
+      fall
+    end
+  end
+
+  def fall
+    @step = -@step
+    @y += 16
+    puts @y > 200
+    if @y > 200
+       $int.stop
+       puts "Complete."
+    end
+  end
+
+  def draw(context)
+    num = (@x/@step)%@sprites.size
+    context.drawImage @sprites[num].image, @x, @y
+  end
+end
+
+class Cannon < Sprite
+  attr_accessor :step
+  attr_writer :stepx
+
+  def initialize
+     super '/image/cannon.png'
+     @step = 16
+     @y = 300
+  end
+
+  def act
+     @x += @step
+  end
+end
+
+def add_element(tag, text)
+  bt=$doc.createElement(tag)
+  bt.type='button'
+  bt.innerText=text
+  $doc.body.appendChild bt
+  bt
+end
+
+def add_button(text)
+  bt = add_element 'button', text
+  bt.type='button'
+  bt
+end
+
+def create_swarm(width, height)
+  grid = []
+  y = 64
+  height.times {
+    x = 8
+    row = []
+    width.times {
+      invader = Invader.new
+      invader.move x, y
+      row << invader
+      x += 72
+    }
+    grid << row
+    y += 48
+  }
+  grid
+end
+
+$canvas = Canvas.new
+$canvas.background = 'rgb(192, 255, 192)'
+
+bt = add_button '<'
+bt.addEventListener('click') {
+   $cannon.stepx = -$cannon.step
+}
+
+bt = add_button '>'
+bt.addEventListener('click') {
+   $cannon.stepx = $cannon.step
+}
+
+bt = add_button '!'
+bt.addEventListener('click') {
+   $cannon.shot
+}
+
+$frame_label = add_element 'div', ''
+
+$cannon = Cannon.new
+swarm = create_swarm(2, 1)
+
+$frame = 0
+$int = Interval.new(50) {
+   $frame_label.value = $frame+=1
+   $canvas.clear
+   swarm.each { |row| 
+      row.each {|char| char.act }
+   }
+   swarm.each { |row| 
+      row.each {|char| char.draw $canvas.context }
+   }
+}
+
+$int.start

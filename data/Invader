@@ -1,37 +1,44 @@
+# 2D アニメデモ(HTML5)
+
 $win = $native.window
 $doc = $win.document
 
-debug = $doc.getElementById('debug')
 canvas = $doc.getElementById('canvas')
-unless canvas
-  puts "create canvas"
-  canvas = $doc.createElement('canvas')
-  debug.appendChild(canvas)
-end
-
 ctx = canvas.getContext('2d')
 
-image = $doc.getElementById('invader')
+image = $doc.createElement('img')
+image.src = '/image/invader20-1.png'
+image2 = $doc.createElement('img')
+image2.src = '/image/invader20-2.png'
 x = 0
 y = 0
-step = 4
+stepx = 12
+stepy = 16
+limitx = canvas.width - 64*2 - 8
+limity = canvas.height - 40
 
-int = Interval.new(10) {
+puts "Start!"
+count = 0
+
+int = Interval.new(33) {
    ctx.fillStyle = 'rgb(255, 192, 192)'
-   ctx.fillRect(0, 0, 480, 320)
-   ctx.drawImage(image, x, y)
-   x += step
-   if 200 < x
-      step = -4
-      y += 16
-      if 120 < y 
+   ctx.fillRect(0, 0, canvas.width, canvas.height)
+   sprite = (count % 2 == 0)? image : image2
+   count+=1
+   ctx.drawImage(sprite, x, y)
+   ctx.drawImage(sprite, x+72, y)
+   x += stepx
+   if limitx < x
+      stepx = -stepx
+      y += stepy
+      if limity < y 
         int.stop
         puts "Complete."
       end
    elsif x < 0
-      step = 4
-      y += 16
-      if 120 < y 
+      stepx = -stepx
+      y += stepy
+      if limity < y 
         int.stop
         puts "Complete."
       end

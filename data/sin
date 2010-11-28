@@ -1,40 +1,5 @@
-$win = $native.window
-$doc = $win.document
-
-$debug = $doc.getElementById('debug')
-
-class Canvas
-  def canvas; @canvas; end
-  def context; @context; end
-  def background=(bg); @background = bg; end
-
-  def initialize(width = nil, height = nil)
-    @canvas = $doc.getElementById('canvas')
-    unless @canvas
-       puts "create canvas"
-       @canvas = $doc.createElement('canvas')
-       $debug.appendChild(@canvas)
-    end
-    @canvas.width = width if width
-    @canvas.height = height if height
-    @width = @canvas.width
-    @height = @canvas.height
-    @context = @canvas.getContext('2d')
-    @background = 'rgb(0, 0, 0)'
-
-    clear
-  end
-
-  def clear
-    @context.fillStyle = @background
-    @context.fillRect(0, 0, @width, @height)
-  end
-end
-
-
-canvas = Canvas.new(300, 150)
-canvas.background = 'rgb(255,255,255)'
-canvas.clear
+require 'Canvas'
+canvas = Canvas.new
 
 Colors = %w(red blue green magenta cyan yellow)
 
@@ -44,18 +9,18 @@ ctx.lineWidth = 4
 
 num = 0
 PI=3.14
-int = Interval.new(10) {
+center = 120
+Interval.new(10) {
       x = num/4
-      y = Math.sin(num/180*PI)*50+75
+      y = Math.sin(num/180*PI)*50+center
       ctx.strokeStyle = 'blue'
       ctx.strokeRect x, y, 1, 1
-      y = Math.cos(num/180*PI)*50+75
+      y = Math.cos(num/180*PI)*80+center
       ctx.strokeStyle = 'red'
       ctx.strokeRect x, y, 1, 1
       num += 4
-      if (x > 300)
+      if (num > 100)
          int.stop
          puts 'Complete.'
       end
-}
-int.start
+}.start
