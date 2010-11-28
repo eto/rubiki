@@ -565,7 +565,7 @@ HotRuby.prototype = {
 				return;
 			}
 			if (methodName != "new") {
-				throw "[invokeMethod] Undefined function : " + methodName;
+				throw "[invokeMethod] " + sf.lineNo + ": Undefined function: " + methodName;
 			}
 		}
 		
@@ -1430,7 +1430,8 @@ HotRuby.prototype.classes = {
 		},
 
 		"<<" : function(recver, args) {
-			return recver.__native += args[0].__native;
+			recver.__native += args[0].__native;
+			return recver;
 		},
 				
 		"*" : function(recver, args) {
@@ -1491,7 +1492,23 @@ HotRuby.prototype.classes = {
 		
 		"to_s" : function(recver, args) {
 			return this.createRubyString(recver.__native.join(args[0]));
-		}
+		},
+		
+		"<<" : function(recver, args) {
+			return recver.__native.push(args[0]);
+		},
+
+		"+" : function(recver, args) {
+			return this.createRubyArray(recver.__native.concat(args[0].__native));
+		},
+
+		"each" : function(recver, args, sf) {
+			for (var i = 0;i < recver.__native.length; i++) {
+				var obj = recver.__native[i];
+				this.invokeMethod(args[0], "yield", [obj], sf, 0, false);
+				sf.sp--;
+			}
+		},
 	},
 	
 	"Hash" : {
