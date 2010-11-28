@@ -1,0 +1,23 @@
+$doc = $native.window.document
+# body = $doc.body #getElementsByTagName('body')
+body = $doc.getElementById('debug')
+
+p=$doc.createElement('p')
+p.innerText = 'new paragraph.'
+body.appendChild p
+
+bt=$doc.createElement('button')
+bt.type='button'
+bt.innerText='Go'
+bt.addEventListener('click') {
+   puts 'go!' 
+}
+body.appendChild bt
+
+bt=$doc.createElement('button')
+bt.type='button'
+bt.innerText='stop'
+bt.addEventListener('click') {
+   puts 'stop.' 
+}
+body.appendChild bt

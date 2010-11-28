@@ -1,0 +1,115 @@
+$win = $native.window
+$doc = $win.document
+
+$debug = $doc.getElementById('debug')
+
+class Canvas
+  def canvas; @canvas; end
+  def context; @context; end
+  def width; @width; end
+  def height; @height; end
+  def background=(color); @background=color; end
+
+  def initialize
+    @canvas = $doc.getElementById('canvas')
+    #@canvas.width = width if width
+    #@canvas.height = height if height
+    @width = @canvas.width
+    @height = @canvas.height
+    @context = @canvas.getContext('2d')
+    @background = 'white'
+
+    clear
+  end
+
+  def clear
+    @context.fillStyle = @background
+    @context.fillRect(0, 0, @width, @height)
+  end
+end
+
+class Sprite
+  def x; @x; end
+  def y; @y; end
+
+  def initialize(path)
+    @image = $doc.createElement('img')
+    @image.src = path
+    move 0, 0
+  end
+
+  def move(x, y)
+     @x = x
+     @y = y
+  end
+    
+  def draw(context)
+    context.drawImage(@image, @x, @y)
+  end
+end
+
+class Invader < Sprite
+  def stepx=(pixel); @stepx=pixel; end
+  def stepy=(pixel); @stepy=pixel; end
+
+  def initialize
+    super '/image/invader.png'
+    @stepx = 0
+    @stepy = 0
+  end
+
+  def act
+    @x += @stepx
+    @y += @stepy
+  end
+end
+
+KeyLeft = 83
+KeyUp = 69
+KeyRight = 68
+KeyDown = 88
+KeySpace = 32
+
+$canvas = Canvas.new
+$canvas.background = 'rgb(128, 0, 0)'
+$canvas.clear
+$invader = Invader.new
+$invader.move 160, 120
+
+def draw_all
+   $invader.act
+   $canvas.clear
+   $invader.draw($canvas.context)
+end
+
+$keyon = {}
+
+add_event_listener("keydown") { |event|
+   $keyon[event.which]=1
+   #puts event.which
+}
+
+add_event_listener("keyup") { |event|
+   $keyon[event.which]=0
+   #puts event.which
+}
+
+Interval.new(200) {
+   if $keyon[KeyRight] == 1
+     $invader.stepx = 12
+     $invader.stepy = 0
+   elsif $keyon[KeyLeft] == 1
+     $invader.stepx = -12
+     $invader.stepy = 0
+   elsif $keyon[KeyUp] == 1
+     $invader.stepx = 0
+     $invader.stepy = -12
+   elsif $keyon[KeyDown] == 1
+     $invader.stepx = 0
+     $invader.stepy = 12
+   else
+     $invader.stepx = 0
+     $invader.stepy = 0
+   end
+   draw_all
+}.start

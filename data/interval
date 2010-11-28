@@ -1,0 +1,4 @@
+i=0
+Interval.new(100) {
+   puts i += 10
+}.start
