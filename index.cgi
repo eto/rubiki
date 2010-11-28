@@ -23,10 +23,10 @@ class RamazikiController < Ramaze::Controller
   Ramaze::Log.debug "start"
   Ramaze::Log.level = Innate::LogHub::DEBUG
   Ramaze::Log.debug Ramaze::Log.level
-#  trait :paginate => {
-#    :limit => 3,
-#    :var => 'page',
-#  }
+  trait :paginate => {
+    :limit => 20,
+    :var => 'page',
+  }
 
   def home
   end
