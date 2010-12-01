@@ -12,13 +12,22 @@
 	<script type="text/javascript" src="/js/prettify.js"></script>
 	<script type="text/javascript" src="/js/ext-base.js"></script>
 	<script type="text/javascript" src="/js/HotRuby.js"></script>
-	<script src="/codepress/codepress.js" type="text/javascript"></script>
+	<script language="javascript" type="text/javascript" src="/editarea/edit_area_full.js"></script>
+	<script language="javascript" type="text/javascript">
+		editAreaLoader.init({
+		id : "ruby_src",		// textarea id
+		syntax: "ruby",	// syntax to be uses for highgliting
+		font_size: 12, 
+		start_highlight: true	// to display with highlight mode on start-up
+	});
+	</script>	
 	<script type="text/javascript">
 		//initHighlightingOnLoad();
 		function compileAndRun() {
 			//var e = document.getElementById("ruby_src");
 			//var src = e.innerHTML;
-			var src = ruby_src.getCode();
+			//var src = ruby_src.getCode();
+			var src = editAreaLoader.getValue('ruby_src');
 			hotruby = new HotRuby();
 			hotruby.compileAndRun("/compile_ruby/" + escape("<%= @page %>"), src);
 		}
@@ -50,7 +59,7 @@
 <input type="submit" value="Save">
 <button type="button" onclick="javascript:compileAndRun()" value="Run">Run</button>
 <br />
-<textarea name="text" id="ruby_src" class="codepress ruby" cols="50" rows="20" style="font-size: 12pt;"><%= @text %></textarea>
+<textarea name="text" id="ruby_src" cols="50" rows="20" style="font-size: 12pt;"><%= @text %></textarea>
 </form>
 
 <%= footer %>
