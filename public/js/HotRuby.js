@@ -1238,7 +1238,18 @@ HotRuby.prototype.classes = {
 		"require": function(recver, args) {
 			var lib = args[0];
 			this.require(lib.__native);	
-		}
+		},
+		
+		"sprintf": function(recver, args){
+			var str = va_sprintf(args);
+			return this.createRubyString(str);
+		},
+
+		"printf": function(recver, args){
+			var str = va_sprintf(args);
+			this.printDebug(str);
+			return this.createRubyString(str);
+		},
 
 	},
 

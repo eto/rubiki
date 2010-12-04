@@ -41,7 +41,6 @@ function sprintf() {
 function va_sprintf(args) {
   var ch;
   var value;
-  var longflag;
   var ljust;
   var len, llen;
   var zpad;
@@ -57,151 +56,127 @@ function va_sprintf(args) {
   arg_index = 1;
   argv = args;
   argc = args.length;
-  format = args[0];
+  format = args[0].__native;
 
   while (format_index < format.length) {
     ch = format.substr(format_index++, 1);
     if (ch != '%' || format_index == format.length) {
-      output += ch;
-    } else {
-      // ch == '%'
-      ljust = len = zpad = longflag = 0;
-      llen = -1;
-      p = format_index;
-      specin = true;
+		output += ch;
+		continue;
+	}
+    // ch == '%'
+    ljust = len = zpad = 0;
+    llen = -1;
+    p = format_index;
+    specin = true;
 
-      while (specin) {
-	ch = format.substr(format_index++, 1);
-	switch(ch) {
-	case '-':
-	  ljust = 1;
+    while (specin) {
+		ch = format.substr(format_index++, 1);
+		switch(ch) {
+		case '-':
+	  	  ljust = 1;
           continue;
 
-	case '0':         // set zero padding if len not set
-	  if(len == 0)
-	    zpad = 1;
-	  // FALLTHROUGH
-	case '1': case '2': case '3':
-	case '4': case '5': case '6':
-	case '7': case '8': case '9':
-	  len = len * 10 + parseInt(ch);
-	  continue;
+		case '0':         // set zero padding if len not set
+		  if(len == 0)
+	    	zpad = 1;
+	  	// FALLTHROUGH
+		case '1': case '2': case '3':
+		case '4': case '5': case '6':
+		case '7': case '8': case '9':
+	  		len = len * 10 + parseInt(ch);
+	  		continue;
 
-	case '.':
-	  llen = len;
-	  len = 0;
-	  continue;
+		case '.':
+	  		llen = len;
+	  		len = 0;
+	  		continue;
 
-	case '*':
-	  if (arg_index < argc)
-	    len = parseInt(argv[arg_index++]);
-	  else
-	    len = 0;
-	  if (len < 0) {
-	    ljust = 1;
-	    len = -len;
-	  }
-	  continue;
+		case '*':
+	  		if (arg_index < argc)
+	    		len = parseInt(argv[arg_index++]);
+	  		else
+	    		len = 0;
+	  		if (len < 0) {
+	    		ljust = 1;
+	    		len = -len;
+	  		}
+	  		continue;
 
-	case 'l':
-	  longflag = 1;
-	  continue;
+		case 'l':
+	  		// long指定は無視
+	  		continue;
 
-	case 'u': case 'U':
-	  if (arg_index < argc) {
-	    if (longflag) {
-	      value = parseInt(argv[arg_index++]);
-	    } else {
-	      value = parseInt(argv[arg_index++]);
-	      value %= 4294967296;
-	    }
-	  } else {
-	    value = 0;
-	  }
-	  output += _dopr_fmtnum(value, 10,0, ljust, len, zpad);
-	  break;
+		case 'u': case 'U':
+			if (arg_index < argc) {
+        		value = Math.floor(argv[arg_index++]);
+	  		} else {
+	    		value = 0;
+	  		}
+	  		output += _dopr_fmtnum(value, 10,0, ljust, len, zpad);
+	  		break;
 
-	case 'o': case 'O':
-	  if (arg_index < argc) {
-	    if (longflag) {
-	      value = parseInt(argv[arg_index++]);
-	    } else {
-	      value = parseInt(argv[arg_index++]);
-	      value %= 4294967296;
-	    }
-	  } else {
-	    value = 0;
-	  }
-	  output += _dopr_fmtnum(value, 8,0, ljust, len, zpad);
-	  break;
+		case 'o': case 'O':
+	  		if (arg_index < argc) {
+        		value = Math.floor(argv[arg_index++]);
+	  		} else {
+	    		value = 0;
+	  		}
+	  		output += _dopr_fmtnum(value, 8,0, ljust, len, zpad);
+	  		break;		
 
-	case 'd': case 'D':
-	  if (arg_index < argc) {
-	    if (longflag) {
-	      value = parseInt(argv[arg_index++]);
-	    } else {
-	      value = parseInt(argv[arg_index++]);
-	      value %= 4294967296;
-	    }
-	  } else {
-	    value = 0;
-	  }
-	  output += _dopr_fmtnum(value, 10,1, ljust, len, zpad);
-	  break;
+		case 'd': case 'D':
+	  		if (arg_index < argc) {
+        		value = Math.floor(argv[arg_index++]);
+	  		} else {
+	    		value = 0;
+	  		}	
+	  		output += _dopr_fmtnum(value, 10,1, ljust, len, zpad);
+	  		break;
 
-	case 'x':
-	  if (arg_index < argc) {
-	    if (longflag) {
-	      value = parseInt(argv[arg_index++]);
-	    } else {
-	      value = parseInt(argv[arg_index++]);
-	      value %= 4294967296;
-	    }
-	  } else {
-	    value = 0;
-	  }
-	  output += _dopr_fmtnum(value, 16,0, ljust, len, zpad);
-	  break;
+		case 'x':
+	  		if (arg_index < argc) {
+        		value = Math.floor(argv[arg_index++]);
+	  		} else {
+	    		value = 0;
+	  		}
+	  		output += _dopr_fmtnum(value, 16,0, ljust, len, zpad);
+	  		break;	
 
-	case 'X':
-	  if (arg_index < argc) {
-	    if (longflag) {
-	      value = parseInt(argv[arg_index++]);
-	    } else {
-	      value = parseInt(argv[arg_index++]);
-	      value %= 4294967296;
-	    }
-	  } else {
-	    value = 0;
-	  }
-	  output += _dopr_fmtnum(value, -16,0, ljust, len, zpad);
-	  break;
+		case 'X':
+	  		if (arg_index < argc) {
+        		value = Math.floor(argv[arg_index++]);
+	  		} else {
+	    		value = 0;
+	  		}
+	  		output += _dopr_fmtnum(value, -16,0, ljust, len, zpad);
+	  		break;
 
-	case 's':
-	  if (arg_index < argc) {
-	    value = argv[arg_index++];
-	    if(value == null)
-	      value = "(null)";
-	    else
-	      value = value + "";	// toString
-	  } else {
-	    value = '';
-	  }
-	  output += _dopr_fmtstr(value, ljust, len, llen);
-	  break;
+		case 's':
+	  		if (arg_index < argc) {
+	    		value = argv[arg_index++].__native;
+	    		if(value == null)
+	      			value = "(null)";
+	    		else
+	      			value = value + "";	// toString
+	  		} else {
+	    		value = '';
+	  		}
+	  		output += _dopr_fmtstr(value, ljust, len, llen);
+	  		break;
 
-	case 'c':
-	  if (arg_index < argc) {
-	    value = parseInt(argv[arg_index++]);
-	  } else {
-	    value = 0;
-	  }
-	  output += _dopr_fromCharCode(value);
-	  break;
+		case 'c':
+	  		if (arg_index < argc) {
+        		value = Math.floor(argv[arg_index++]);
+	  		} else {
+	    		value = 0;
+	  		}
+	  		output += _dopr_fromCharCode(value);
+	  		break;
 
-	case '%':
-	  output += '%';
-	  break;
+		case '%':
+			output += '%';
+	  		break;
 
 /* Not supported
 	case 'f': case 'e': case 'E': case 'g': case 'G':
@@ -214,21 +189,20 @@ function va_sprintf(args) {
 	  break;
 */
 
-	default:
-	  if(p + 1 == format_index) {
-	    output += '%';
-	    output += ch;
-	  }
-	  else {
-	    // alert("format error: " + format);
-	  }
-	  break;
-	}
-	specin = false;
-      }
-    }
-  }
-  return output;
+		default:
+	  		if(p + 1 == format_index) {
+	    		output += '%';
+	    		output += ch;
+	  		//} else {
+	    	//	alert("format error: " + format);
+	  		}
+	  		break;
+		} // switch
+		specin = false;
+      } // while
+  	} // while
+
+  	return output;
 }
 
 // Private function
