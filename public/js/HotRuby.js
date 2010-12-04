@@ -1145,10 +1145,20 @@ HotRuby.prototype = {
 		}
 	}, 
 	
+	//// エディタの特定行にジャンプ。
 	gotoLine: function(lineNo) {
 		editAreaLoader.execCommand("ruby_src", "go_to_line", "" + lineNo);
 	},
-	
+
+	//// 整数decをn進数の文字列に変換。	
+    dec2numeral: function(dec, n){
+		var bin = "";
+        do {
+            bin = "0123456789abcdefghijklmnopqrstuvwxyz".slice(dec % n, 1) + bin;
+            dec = Math.floor(dec/n);
+        } while (dec > 0);
+        return bin;
+    },
 };
 
 // Consts
@@ -1360,9 +1370,32 @@ HotRuby.prototype.classes = {
 			return recver == args[0] ? this.trueObj :  this.falseObj;
 		},
 		
+		"-@" : function(recver, args) {
+			return -recver;	
+		},
+		
+		"to_i" : function(recver) {
+			return Math.floor(recver);	
+		},
+
+		// 以下、いつかちゃんとIntegerに移したいメソッドw
 		"times" : function(recver, args, sf) {
-			for (var i = 0;i < recver; i++) {
-				this.invokeMethod(args[0], "yield", [i], sf, 0, false);
+			var proc = args[0];
+			for (var i = 0; i < recver; i++) {
+				this.invokeMethod(proc, "yield", [i], sf, 0, false);
+				sf.sp--;
+			}
+		},
+		
+		"step": function(recver, args, sf) {
+			var finish = args[0];
+			var proc = args[args.length - 1];
+			var step = 1;
+			if (args.length == 3) {
+				step = args[1];
+			}
+			for (var i = recver; i <= finish; i += step) {
+				this.invokeMethod(proc, "yield", [i], sf, 0, false);
 				sf.sp--;
 			}
 		},
@@ -1375,13 +1408,26 @@ HotRuby.prototype.classes = {
 			return recver >> args[0];
 		},
 		
-		"-@" : function(recver, args) {
-			return -recver;	
+		"upto": function(recver, args, sf) {
+			var proc = args[1];
+			for (var i = recver; i < args[0]; i++) {
+				this.invokeMethod(proc, "yield", [i], sf, 0, false);
+				sf.sp--;
+			}
 		},
-		
-		"to_s" : function(recver) {
-			return this.createRubyString(recver.toString());	
-		}
+
+		"to_s" : function(recver, args) {
+			if (args.length == 0) {
+				return this.createRubyString(recver.toString());
+			} else {
+				// Integer.to_s(x) を模倣
+				var n = args[0];
+				var val = Math.floor(recver);
+				var str = this.dec2numeral(val, n);
+				return this.createRubyString(str);
+			}	
+		},
+
 	},
 
 	"Integer" : {
@@ -1489,7 +1535,17 @@ HotRuby.prototype.classes = {
 			} else {
 				throw "Unsupported String[]";
 			}
-		}
+		},
+		
+		"length" : function(recver) {
+			return recver.__native.length;
+		},
+		
+		"size" : function(recver) {
+			return recver.__native.length;
+		},
+		
+
 	},
 	
 	"Array" : {
@@ -1532,6 +1588,10 @@ HotRuby.prototype.classes = {
 				sf.sp--;
 			}
 		},
+		
+		"shift" : function(recver) {
+			return recver.__native.shift();
+		}
 	},
 	
 	"Hash" : {
@@ -1694,6 +1754,9 @@ HotRuby.prototype.classes = {
 		"sqrt" : function(recver, args) {
 			return Math.sqrt(args[0]);
 		}, 
+		"PI": function(recver){
+			return Math.PI;
+		},
 	}
 };
 
