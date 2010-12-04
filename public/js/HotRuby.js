@@ -123,7 +123,7 @@ HotRuby.prototype = {
 		try {
 			this.runOpcode(opcode, this.classes.Object, null, this.topObject, [], null, false, null);
 		} catch(e) {
-			alert(e);
+			this.printDebug(e);
 		}
 	},
 	
@@ -161,20 +161,25 @@ HotRuby.prototype = {
 		for (var i = 0;i < opcode[4].arg_size; i++) {
 			sf.localVars[sf.localVars.length - 1 - i] = args[i];
 		}
-		
-		// Run the mainLoop
-		this.mainLoop(opcode[11], sf);
-		
-		// Copy the stack to the parent stack frame
-		if (parentSF != null) {
-			for (var i = 0;i < sf.sp; i++) {
-				parentSF.stack[parentSF.sp++] = sf.stack[i];
+		try {
+			// Run the mainLoop
+			this.mainLoop(opcode[11], sf);
+			
+			// Copy the stack to the parent stack frame
+			if (parentSF != null) {
+				for (var i = 0; i < sf.sp; i++) {
+					parentSF.stack[parentSF.sp++] = sf.stack[i];
+				}
 			}
-		} else {
-			// Run END blocks
-			if(this.endBlocks.length > 0) {
-				this.run(this.endBlocks.pop());
+			else {
+				// Run END blocks
+				if (this.endBlocks.length > 0) {
+					this.run(this.endBlocks.pop());
+				}
 			}
+		} catch (e) {
+			this.gotoLine(sf.lineNo);
+			throw e;		
 		}
 	},
 	
@@ -565,7 +570,7 @@ HotRuby.prototype = {
 				return;
 			}
 			if (methodName != "new") {
-				throw "[invokeMethod] " + sf.lineNo + ": Undefined function: " + methodName;
+				throw "NoMethodError in "+ sf.lineNo + ": undefined method `" + methodName + "' for " + recver + ":" + recverClassName 
 			}
 		}
 		
@@ -1046,7 +1051,9 @@ HotRuby.prototype = {
 							this.run(opcode);
 						} else {
 							opcode_el.style.visibility = "visible";
-							alert(opcode[0]);
+							opcode[0].match(/\w+:(\d+):/);
+							this.gotoLine(RegExp.$1);
+							this.printDebug(opcode[0]);
 						}
 					}
 				},
@@ -1136,7 +1143,12 @@ HotRuby.prototype = {
 		} else {
 			RegExp.$1;
 		}
-	}
+	}, 
+	
+	gotoLine: function(lineNo) {
+		editAreaLoader.execCommand("ruby_src", "go_to_line", "" + lineNo);
+	},
+	
 };
 
 // Consts
